@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Text Fetch</string>
+    <string name="loading">Fetching text…</string>
+    <string name="loaded_ok">Loaded</string>
+    <string name="loaded_fail">Failed: %1$s (showing local fallback)</string>
+    <string name="no_asset">No assets/default.txt found. Add a file or set TEXT_URL in app/build.gradle.kts</string>
+</resources>

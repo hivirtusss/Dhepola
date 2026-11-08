@@ -1,0 +1,3 @@
+Hello — this is the built-in text file.
+If you host a .txt on the internet, set TEXT_URL in app/build.gradle.kts
+and this file is only used when the download fails.

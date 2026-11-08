@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#1565C0</color>
+    <string name="app_name">Text Fetch</string>
+    <string name="loaded_fail">Failed: %1$s (showing local fallback)</string>
+    <string name="loaded_ok">Loaded</string>
+    <string name="loading">Fetching text…</string>
+    <string name="no_asset">No assets/default.txt found. Add a file or set TEXT_URL in app/build.gradle.kts</string>
+    <style name="Theme.TextFetch" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#1565C0</item>
+    </style>
+</resources>

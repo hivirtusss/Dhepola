@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Config Loader</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0a1220; color: #e8f0fe; margin: 0; padding: 16px; }
+    h1 { font-size: 1.1rem; margin: 0 0 12px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    button, label.btn { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(0,200,255,.25);
+      background: #131f35; color: #e8f0fe; font-size: 0.85rem; cursor: pointer; }
+    label.btn input { display: none; }
+  .status { font-size: 0.85rem; color: #8ab4d9; margin-bottom: 10px; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #0f1a2e; border: 1px solid rgba(0,200,255,.15);
+      border-radius: 12px; padding: 14px; font-size: 0.8rem; max-height: 65vh; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>Config Loader (legal sample)</h1>
+  <p class="status" id="status">Starting…</p>
+  <div class="row">
+    <button type="button" id="reloadBtn">🔄 Reload from URL</button>
+    <label class="btn">📂 Local TXT<input type="file" id="fileInput" accept=".txt,text/plain" /></label>
+  </div>
+  <pre id="out">(waiting)</pre>
+  <script>
+    const REMOTE_URL = (window.AndroidConfig && AndroidConfig.textUrl()) || '';
+
+    const status = document.getElementById('status');
+    const out = document.getElementById('out');
+
+    async function fetchRemote() {
+      if (!REMOTE_URL || REMOTE_URL.includes('example.com')) {
+        status.textContent = 'Set TEXT_URL in app/build.gradle.kts, then rebuild APK.';
+        return loadBundled();
+      }
+      status.textContent = 'Fetching…';
+      try {
+        const res = await fetch(REMOTE_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        out.textContent = text;
+        status.textContent = 'Loaded from URL';
+      } catch (e) {
+        status.textContent = 'URL failed: ' + e.message + ' — using bundled default.txt';
+        loadBundled();
+      }
+    }
+
+    function loadBundled() {
+      fetch('default.txt')
+        .then(r => r.text())
+        .then(t => { out.textContent = t; if (status.textContent === 'Starting…') status.textContent = 'Bundled default.txt'; })
+        .catch(() => { out.textContent = 'No data yet. Upload a .txt or set TEXT_URL.'; });
+    }
+
+    document.getElementById('reloadBtn').onclick = () => fetchRemote();
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        out.textContent = String(r.result || '');
+        status.textContent = 'Loaded: ' + f.name;
+      };
+      r.readAsText(f);
+    });
+
+    fetchRemote();
+  </script>
+</body>
+</html>
